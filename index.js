@@ -1,15 +1,22 @@
 import fetch from "node-fetch";
 import path from "node:path";
 
+const hosts = ["https://setup.rbxcdn.com", "https://setup-ak.rbxcdn.com", "https://s3.amazonaws.com/setup.roblox.com"];
+
 /**
  * @returns {Promise.<String>} path/to/executable
  */
 export default async function getPath() {
-	let clientSettings = await fetch("https://clientsettingscdn.roblox.com/v2/client-version/WindowsPlayer/channel/LIVE");
-	if (clientSettings.ok) {
-		const { clientVersionUpload } = await clientSettings.json();
-		return path.join(process.env.LOCALAPPDATA, "Roblox\\Versions", clientVersionUpload, "RobloxPlayerBeta.exe");
-	} else {
-		throw new Error("clientsettingscdn.roblox.com returned", clientSettings.status);
+	let version;
+	for (const host of hosts) {
+		const response = await fetch(host + "/version");
+		if (response.ok) {
+			version = await response.text();
+			break;
+		}
 	}
+	if (!version) {
+		throw new Error("No provider available");
+	}
+	return path.join(process.env.LOCALAPPDATA, "Roblox\\Versions", version, "RobloxPlayerBeta.exe");
 }
