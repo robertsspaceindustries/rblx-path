@@ -1,8 +1,9 @@
 {
 	"name": "@robertsspaceindustries/rblx-path",
-	"version": "1.0.1-b",
+	"version": "1.0.2",
 	"description": "Get latest Roblox player executable",
 	"main": "./index.js",
+	"bin": "./bin.cjs",
 	"type": "module",
 	"types": "./index.d.ts",
 	"scripts": {
